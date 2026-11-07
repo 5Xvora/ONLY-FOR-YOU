@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animated Vector Sunflower</title>
+    <!-- Tailwind CSS for utility styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap');
+
+        body {
+            font-family: 'Fredoka', sans-serif;
+            background: linear-gradient(135deg, #1e1e24 0%, #0d0d11 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        /* SVG Vector Animation Keyframes */
+        .stem-path {
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            animation: growStem 2.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        @keyframes growStem {
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+
+        .leaf-left {
+            transform-origin: 200px 330px;
+            transform: scale(0) rotate(-30deg);
+            animation: popLeafLeft 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 1.2s forwards;
+        }
+
+        .leaf-right {
+            transform-origin: 200px 300px;
+            transform: scale(0) rotate(30deg);
+            animation: popLeafRight 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 1.4s forwards;
+        }
+
+        @keyframes popLeafLeft {
+            to {
+                transform: scale(1) rotate(0deg);
+            }
+        }
+
+        @keyframes popLeafRight {
+            to {
+                transform: scale(1) rotate(0deg);
+            }
+        }
+
+        .flower-head {
+            transform-origin: 200px 180px;
+            transform: scale(0) rotate(-45deg);
+            animation: bloomFlower 1.4s cubic-bezier(0.34, 1.56, 0.64, 1) 1.8s forwards;
+        }
+
+        @keyframes bloomFlower {
+            to {
+                transform: scale(1) rotate(0deg);
+            }
+        }
+
+        .sway-wrapper {
+            transform-origin: 200px 420px;
+            animation: gentleSway 4.5s ease-in-out infinite alternate 3.2s;
+        }
+
+        @keyframes gentleSway {
+            0% { transform: rotate(0deg); }
+            50% { transform: rotate(2deg); }
+            100% { transform: rotate(-2deg); }
+        }
+
+        @keyframes gentleSway {
+            0% {
+                transform: rotate(0deg);
+            }
+            50% {
+                transform: rotate(2.5deg);
+            }
+            100% {
+                transform: rotate(-2.5deg);
+            }
+        }
+
+        /* Floating elements animations */
+        .float-heart {
+            animation: floatUpHeart 4s ease-in-out infinite alternate;
+        }
+
+        @keyframes floatUpHeart {
+            0% { transform: translateY(0px) scale(0.9) rotate(-5deg); }
+            100% { transform: translateY(-15px) scale(1.1) rotate(5deg); }
+        }
+
+        .float-item-1 { animation: floatAnim1 4.5s ease-in-out infinite alternate; }
+        .float-item-2 { animation: floatAnim2 5.2s ease-in-out infinite alternate 0.4s; }
+        .float-item-3 { animation: floatAnim3 4.8s ease-in-out infinite alternate 0.8s; }
+        .float-item-4 { animation: floatAnim1 5.5s ease-in-out infinite alternate 1.2s; }
+        .float-item-5 { animation: floatAnim2 4.2s ease-in-out infinite alternate 1.6s; }
+
+        @keyframes floatAnim1 {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(-10px, -14px) rotate(15deg); }
+        }
+
+        @keyframes floatAnim2 {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(12px, -12px) rotate(-15deg); }
+        }
+
+        @keyframes floatAnim3 {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(-8px, 10px) rotate(10deg); }
+        }
+
+        /* Replay Button Styling */
+        .replay-btn {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .replay-btn:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 10px 25px -5px rgba(234, 179, 8, 0.4);
+        }
+        .replay-btn:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        /* Sparkle Particle Canvas */
+        #sparkleCanvas {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        /* Floating Click Word Particle */
+        .click-word {
+            position: absolute;
+            pointer-events: none;
+            font-family: 'Fredoka', cursive, sans-serif;
+            font-weight: 600;
+            color: #d97706;
+            text-shadow: 0 2px 8px rgba(251, 191, 36, 0.6);
+            white-space: nowrap;
+            z-index: 25;
+            animation: floatUpWord 1.6s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+
+        @keyframes floatUpWord {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, 0) scale(0.6) rotate(-4deg);
+            }
+            20% {
+                opacity: 1;
+                transform: translate(-50%, -20px) scale(1.1) rotate(2deg);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -75px) scale(0.9) rotate(-3deg);
+            }
+        }
+    </style>
+</head>
+<body class="p-4 sm:p-6">
+
+    <div id="cardContainer" class="relative max-w-md w-full aspect-[4/5] bg-[#fff6e5] rounded-[36px] shadow-2xl overflow-hidden border-[6px] border-[#fff0d4] flex flex-col items-center justify-center p-6 select-none">
+        
+        <!-- Interactive Sparkles Canvas Overlay -->
+        <canvas id="sparkleCanvas"></canvas>
+
+        <!-- Cute Floating Text "For You" at the Top -->
+        <div class="absolute top-8 z-20 flex items-center gap-2 float-heart opacity-0 transition-opacity duration-1000" id="titleText">
+            <h1 class="text-3xl font-bold tracking-wide text-[#5c320a] drop-shadow-sm font-sans">For You</h1>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="#fbbf24" class="drop-shadow-sm">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+            </svg>
+        </div>
+
+        <!-- Distributed Cute Floating Yellow Hearts & Mini Sunflowers -->
+        <!-- Floating Yellow Heart Top Right -->
+        <div class="absolute top-16 right-10 z-10 float-item-1 opacity-0 transition-opacity duration-1000 float-decor">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="#f59e0b" class="drop-shadow-sm">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+            </svg>
+        </div>
+
+        <!-- Floating Yellow Heart Left Middle -->
+        <div class="absolute top-44 left-8 z-10 float-item-2 opacity-0 transition-opacity duration-1000 float-decor">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="#fbbf24" class="drop-shadow-sm">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+            </svg>
+        </div>
+
+        <!-- Floating Yellow Heart Bottom Right -->
+        <div class="absolute bottom-24 right-14 z-10 float-item-3 opacity-0 transition-opacity duration-1000 float-decor">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="#f59e0b" class="drop-shadow-sm">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+            </svg>
+        </div>
+
+        <!-- Floating Mini Sunflowers Scatter -->
+        <!-- Mini Sunflower 1 (Top Left) -->
+        <div class="absolute top-20 left-12 z-10 float-item-4 opacity-0 transition-opacity duration-1000 float-decor">
+            <svg width="34" height="34" viewBox="0 0 100 100">
+                <g transform="translate(50,50)">
+                    <g fill="#ffc800" stroke="#d97706" stroke-width="2">
+                        <circle cx="0" cy="-28" r="8"/><circle cx="20" cy="-20" r="8"/><circle cx="28" cy="0" r="8"/><circle cx="20" cy="20" r="8"/>
+                        <circle cx="0" cy="28" r="8"/><circle cx="-20" cy="20" r="8"/><circle cx="-28" cy="0" r="8"/><circle cx="-20" cy="-20" r="8"/>
+                    </g>
+                    <circle cx="0" cy="0" r="16" fill="#4a2810" stroke="#2b1405" stroke-width="2"/>
+                    <circle cx="0" cy="0" r="11" fill="#603417"/>
+                </g>
+            </svg>
+        </div>
+
+        <!-- Mini Sunflower 2 (Middle Right) -->
+        <div class="absolute top-52 right-8 z-10 float-item-5 opacity-0 transition-opacity duration-1000 float-decor">
+            <svg width="36" height="36" viewBox="0 0 100 100">
+                <g transform="translate(50,50)">
+                    <g fill="#ffc800" stroke="#d97706" stroke-width="2">
+                        <circle cx="0" cy="-28" r="8"/><circle cx="20" cy="-20" r="8"/><circle cx="28" cy="0" r="8"/><circle cx="20" cy="20" r="8"/>
+                        <circle cx="0" cy="28" r="8"/><circle cx="-20" cy="20" r="8"/><circle cx="-28" cy="0" r="8"/><circle cx="-20" cy="-20" r="8"/>
+                    </g>
+                    <circle cx="0" cy="0" r="16" fill="#4a2810" stroke="#2b1405" stroke-width="2"/>
+                    <circle cx="0" cy="0" r="11" fill="#603417"/>
+                </g>
+            </svg>
+        </div>
+
+        <!-- Mini Sunflower 3 (Bottom Left) -->
+        <div class="absolute bottom-28 left-10 z-10 float-item-1 opacity-0 transition-opacity duration-1000 float-decor">
+            <svg width="32" height="32" viewBox="0 0 100 100">
+                <g transform="translate(50,50)">
+                    <g fill="#fbbf24" stroke="#d97706" stroke-width="2">
+                        <circle cx="0" cy="-28" r="8"/><circle cx="20" cy="-20" r="8"/><circle cx="28" cy="0" r="8"/><circle cx="20" cy="20" r="8"/>
+                        <circle cx="0" cy="28" r="8"/><circle cx="-20" cy="20" r="8"/><circle cx="-28" cy="0" r="8"/><circle cx="-20" cy="-20" r="8"/>
+                    </g>
+                    <circle cx="0" cy="0" r="16" fill="#4a2810" stroke="#2b1405" stroke-width="2"/>
+                    <circle cx="0" cy="0" r="11" fill="#603417"/>
+                </g>
+            </svg>
+        </div>
+
+        <!-- Main SVG Vector Container -->
+        <div class="w-full h-full flex items-center justify-center cursor-pointer" id="flowerInteractiveArea" title="انقر لتشغيل التفاعل">
+            <svg id="sunflowerSvg" class="w-full h-full max-h-[480px]" viewBox="0 0 400 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+                
+                <!-- Ground / Base Shadow -->
+                <ellipse cx="200" cy="455" rx="60" ry="10" fill="#e6d4b8" />
+
+                <!-- Sway Wrapper for Entire Flower -->
+                <g class="sway-wrapper">
+                    
+                    <!-- Curved Cute Stem -->
+                    <path class="stem-path" d="M 200 450 Q 200 320 200 180" stroke="#155d27" stroke-width="14" stroke-linecap="round"/>
+                    <path class="stem-path" d="M 200 450 Q 200 320 200 180" stroke="#229642" stroke-width="8" stroke-linecap="round"/>
+
+                    <!-- Left Cute Round Leaf -->
+                    <g class="leaf-left">
+                        <path d="M 200 330 C 130 340 95 280 115 235 C 150 225 190 270 200 330 Z" fill="#229642" stroke="#155d27" stroke-width="3.5" stroke-linejoin="round"/>
+                        <circle cx="150" cy="275" r="3" fill="#a7f3d0" opacity="0.6"/>
+                        <!-- Leaf Vein -->
+                        <path d="M 200 330 Q 155 280 120 240" stroke="#155d27" stroke-width="3" stroke-linecap="round"/>
+                        <path d="M 170 290 Q 150 280 140 265" stroke="#155d27" stroke-width="2.5" stroke-linecap="round"/>
+                    </g>
+
+                    <!-- Right Cute Round Leaf -->
+                    <g class="leaf-right">
+                        <path d="M 200 300 C 270 310 305 250 285 205 C 250 195 210 240 200 300 Z" fill="#2dcb59" stroke="#155d27" stroke-width="3.5" stroke-linejoin="round"/>
+                        <circle cx="250" cy="245" r="3" fill="#ffffff" opacity="0.4"/>
+                        <!-- Leaf Vein -->
+                        <path d="M 200 300 Q 245 250 280 210" stroke="#155d27" stroke-width="3" stroke-linecap="round"/>
+                        <path d="M 230 260 Q 250 250 260 235" stroke="#155d27" stroke-width="2.5" stroke-linecap="round"/>
+                    </g>
+
+                    <!-- Cute Sunflower Head Group -->
+                    <g class="flower-head">
+                        
+                        <!-- Outer Soft Round Yellow Petals (20 Cute Rounded Petals) -->
+                        <g fill="#ffb703" stroke="#e07a5f" stroke-width="2" stroke-linejoin="round">
+                            <path d="M 200 180 C 178 125 200 65 200 65 C 200 65 222 125 200 180 Z"/>
+                            <path d="M 200 180 C 178 125 200 65 200 65 C 200 65 222 125 200 180 Z" transform="rotate(18 200 180)"/>
+                            <path d="M 200 180 C 178 125 200 65 200 65 C 200 65 222 125 200 180 Z" transform="rotate(36 200 180)"/>
+                            <path d="M 200 180 C 178 125 200 65 200 65 C 200 65 222 125 200 180 Z" transform="rotate(54 200 180)"/>
+                            <path d="M 200 180 C 178 125 200 65 200 65 C 200 65 222 125 200 180 Z" transform="rotate(72 200 180)"/>
+                            <path d="M 200 180 C 178 125 200 65 200 65 C 200 65 222 125 200 180 Z" transform="rotate(90 200 180)"/>
+                            <path d="M 200 180 C 178 125 200 65 200 65 C 200 65 222 125 200 180 Z" transform="rotate(108 200 180)"/>
+                            <path d="M 200 180 C 178 125 200 65 200 65 C 200 65 222 125 200 180 Z" transform="rotate(126 200 180)"/>
+                            <path d="M 200 180 C 178 125 200 65 200 65 C 200 65 222 125 200 180 Z" transform="rotate(144 200 180)"/>
+                            <path d="M 200 180 C 178 125 200 65 200 65 C 200 65 222 125 200 180 Z" transform="rotate(162 200 180)"/>
+                            <path d="M 200 180 C 178 125 200 65 200 65 C 200 65 222 125 200 180 Z" transform="rotate(180 200 180)"/>
+                            <path d="M 200 180 C 178 125 200 65 200 65 C 200 65 222 125 200 180 Z" transform="rotate(198 200 180)"/>
+                            <path d="M 200 180 C 178 125 200 65 200 65 C 200 65 222 125 200 180 Z" transform="rotate(216 200 180)"/>
+                            <path d="M 200 180 C 178 125 200 65 200 65 C 200 65 222 125 200 180 Z" transform="rotate(234 200 180)"/>
+                            <path d="M 200 180 C 178 125 200 65 200 65 C 200 65 222 125 200 180 Z" transform="rotate(252 200 180)"/>
+                            <path d="M 200 180 C 178 125 200 65 200 65 C 200 65 222 125 200 180 Z" transform="rotate(270 200 180)"/>
+                            <path d="M 200 180 C 178 125 200 65 200 65 C 200 65 222 125 200 180 Z" transform="rotate(288 200 180)"/>
+                            <path d="M 200 180 C 178 125 200 65 200 65 C 200 65 222 125 200 180 Z" transform="rotate(306 200 180)"/>
+                            <path d="M 200 180 C 178 125 200 65 200 65 C 200 65 222 125 200 180 Z" transform="rotate(324 200 180)"/>
+                            <path d="M 200 180 C 178 125 200 65 200 65 C 200 65 222 125 200 180 Z" transform="rotate(342 200 180)"/>
+                        </g>
+
+                        <!-- Inner Bright Yellow Layer Petals -->
+                        <g fill="#ffd166" opacity="0.95">
+                            <path d="M 200 180 C 182 135 200 78 200 78 C 200 78 218 135 200 180 Z" transform="rotate(9 200 180)"/>
+                            <path d="M 200 180 C 182 135 200 78 200 78 C 200 78 218 135 200 180 Z" transform="rotate(45 200 180)"/>
+                            <path d="M 200 180 C 182 135 200 78 200 78 C 200 78 218 135 200 180 Z" transform="rotate(81 200 180)"/>
+                            <path d="M 200 180 C 182 135 200 78 200 78 C 200 78 218 135 200 180 Z" transform="rotate(117 200 180)"/>
+                            <path d="M 200 180 C 182 135 200 78 200 78 C 200 78 218 135 200 180 Z" transform="rotate(153 200 180)"/>
+                            <path d="M 200 180 C 182 135 200 78 200 78 C 200 78 218 135 200 180 Z" transform="rotate(189 200 180)"/>
+                            <path d="M 200 180 C 182 135 200 78 200 78 C 200 78 218 135 200 180 Z" transform="rotate(225 200 180)"/>
+                            <path d="M 200 180 C 182 135 200 78 200 78 C 200 78 218 135 200 180 Z" transform="rotate(261 200 180)"/>
+                            <path d="M 200 180 C 182 135 200 78 200 78 C 200 78 218 135 200 180 Z" transform="rotate(297 200 180)"/>
+                            <path d="M 200 180 C 182 135 200 78 200 78 C 200 78 218 135 200 180 Z" transform="rotate(333 200 180)"/>
+                        </g>
+
+                        <!-- Cute Center Disc with Happy Kawaii Face -->
+                        <circle cx="200" cy="180" r="52" fill="#582f0e" stroke="#331800" stroke-width="3.5"/>
+                        <circle cx="200" cy="180" r="46" fill="#7f4f24"/>
+
+                        <!-- Cute Blushing Cheeks -->
+                        <ellipse cx="178" cy="192" rx="7" ry="5" fill="#f4a261" opacity="0.8"/>
+                        <ellipse cx="222" cy="192" rx="7" ry="5" fill="#f4a261" opacity="0.8"/>
+
+                        <!-- Happy Eyes -->
+                        <circle cx="180" cy="176" r="5" fill="#1b0d02"/>
+                        <circle cx="178" cy="174" r="1.8" fill="#ffffff"/>
+                        <circle cx="220" cy="176" r="5" fill="#1b0d02"/>
+                        <circle cx="218" cy="174" r="1.8" fill="#ffffff"/>
+
+                        <!-- Happy Cute Smile Mouth -->
+                        <path d="M 193 186 Q 200 193 207 186" fill="none" stroke="#1b0d02" stroke-width="3" stroke-linecap="round"/>
+
+                        <!-- Subtle Glow Highlight -->
+                        <circle cx="170" cy="150" r="8" fill="#ffffff" opacity="0.2"/>
+                    </g>
+
+                </g>
+            </svg>
+        </div>
+
+        <!-- Controls / Replay Floating Bar -->
+        <div class="absolute bottom-6 z-20">
+            <button id="replayBtn" class="replay-btn bg-amber-500 hover:bg-amber-600 text-white font-semibold px-6 py-2.5 rounded-full shadow-lg flex items-center gap-2 text-sm">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="23 4 23 10 17 10"></polyline>
+                    <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+                </svg>
+                <span>إعادة النمو (Replay)</span>
+            </button>
+        </div>
+
+    </div>
+
+    <script>
+        // Sparkle Particles Interactive Canvas Engine
+        const canvas = document.getElementById('sparkleCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        // List of cute phrases for click interaction (Correct Spelling)
+        const romanticPhrases = [
+            "I love you",
+            "I like you",
+            "I adore you",
+            "You are my sunshine",
+            "You are amazing",
+            "Forever & Always",
+            "My favorite person"
+        ];
+        let phraseIndex = 0;
+
+        function resizeCanvas() {
+            const rect = canvas.parentElement.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        class Particle {
+            constructor(x, y, isHeart = false) {
+                this.x = x || Math.random() * canvas.width;
+                this.y = y || Math.random() * canvas.height;
+                this.isHeart = isHeart;
+                this.size = isHeart ? Math.random() * 12 + 10 : Math.random() * 4 + 1.5;
+                this.speedX = (Math.random() - 0.5) * 2;
+                this.speedY = isHeart ? -(Math.random() * 1.8 + 1) : (Math.random() - 0.5) * 2 - 0.5;
+                this.color = `hsl(${42 + Math.random() * 15}, 100%, ${55 + Math.random() * 30}%)`;
+                this.alpha = 1;
+                this.life = isHeart ? Math.random() * 45 + 35 : Math.random() * 60 + 40;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                this.alpha -= 1 / this.life;
+                if (!this.isHeart && this.size > 0.2) this.size -= 0.03;
+            }
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = Math.max(0, this.alpha);
+                if (this.isHeart) {
+                    ctx.font = `${this.size}px 'Fredoka', sans-serif`;
+                    ctx.fillStyle = "#fbbf24";
+                    ctx.shadowBlur = 10;
+                    ctx.shadowColor = "#f59e0b";
+                    ctx.fillText("♥", this.x, this.y);
+                } else {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fillStyle = this.color;
+                    ctx.shadowBlur = 8;
+                    ctx.shadowColor = this.color;
+                    ctx.fill();
+                }
+                ctx.restore();
+            }
+        }
+
+        function createBurst(x, y, amount = 15) {
+            for (let i = 0; i < amount; i++) {
+                particles.push(new Particle(x, y, false));
+            }
+            // Spawn yellow heart particles
+            for (let i = 0; i < 4; i++) {
+                particles.push(new Particle(x + (Math.random() - 0.5) * 20, y + (Math.random() - 0.5) * 20, true));
+            }
+        }
+
+        function spawnFloatingWord(x, y) {
+            const container = document.getElementById('cardContainer');
+            const wordEl = document.createElement('div');
+            wordEl.className = 'click-word';
+            wordEl.style.left = `${x}px`;
+            wordEl.style.top = `${y}px`;
+            wordEl.textContent = romanticPhrases[phraseIndex];
+            
+            // Cycle through phrases
+            phraseIndex = (phraseIndex + 1) % romanticPhrases.length;
+
+            container.appendChild(wordEl);
+            setTimeout(() => {
+                wordEl.remove();
+            }, 1600);
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+                if (particles[i].alpha <= 0 || (particles[i].size <= 0.2 && !particles[i].isHeart)) {
+                    particles.splice(i, 1);
+                    i--;
+                }
+            }
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        // Reveal Floating Elements on Grow Finish
+        setTimeout(() => {
+            document.getElementById('titleText').classList.remove('opacity-0');
+            document.querySelectorAll('.float-decor').forEach(el => el.classList.remove('opacity-0'));
+            
+            // Burst sparkles around flower head
+            const rect = canvas.getBoundingClientRect();
+            createBurst(rect.width / 2, rect.height * 0.4, 30);
+        }, 2200);
+
+        // Click Interactive Sparkles & Dynamic Words
+        document.getElementById('cardContainer').addEventListener('click', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            createBurst(x, y, 18);
+            spawnFloatingWord(x, y);
+        });
+
+        // Replay Animation Logic
+        document.getElementById('replayBtn').addEventListener('click', (e) => {
+            e.stopPropagation(); // prevent triggering canvas click word on button click
+            const svg = document.getElementById('sunflowerSvg');
+            const title = document.getElementById('titleText');
+
+            // Hide floating elements
+            title.classList.add('opacity-0');
+            document.querySelectorAll('.float-decor').forEach(el => el.classList.add('opacity-0'));
+
+            // Reset SVG Animation
+            const clone = svg.cloneNode(true);
+            svg.parentNode.replaceChild(clone, svg);
+
+            // Trigger particles & show elements again
+            setTimeout(() => {
+                title.classList.remove('opacity-0');
+                document.querySelectorAll('.float-decor').forEach(el => el.classList.remove('opacity-0'));
+                const rect = canvas.getBoundingClientRect();
+                createBurst(rect.width / 2, rect.height * 0.4, 35);
+            }, 2200);
+        });
+    </script>
+</body>
+</html>
